@@ -26,10 +26,15 @@ io.on("connection", (socket) => {
     socket.on('players-connected', ()=>{
         const player = players.find((player) => player.id === socket.id);
 
+        const knigth = "/assets/models/characters/caracterKnigth.glb";
+        const robot = "/assets/models/characters/Robot.glb";
+
         if (!player) {
             players.push({
                 id: socket.id,
-                urlAvatar: "",
+                urlAvatar: io.engine.clientsCount === 1 ?
+                knigth :
+                robot,
                 position: null,
                 rotation: null,
                 animation: "Idle",
@@ -38,13 +43,8 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on('moving-player', (valuesTransformPlayer) => {
-        const player = players.find(player => player.id === socket.id)
-
-        player.position = valuesTransformPlayer.position;
-        player.rotation = valuesTransformPlayer.rotation;
-
-        socket.broadcast.emit('updates-values-transform-player', player)
+    socket.on("player-moving", (transforms) => {
+        socket.broadcast.emit("player-moving", transforms);
     });
 
     socket.on("change-animation", (animation) => {
