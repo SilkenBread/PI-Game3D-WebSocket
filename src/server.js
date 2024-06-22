@@ -39,6 +39,14 @@ io.on("connection", (socket) => {
   });
 
   /**
+   * Handle a player's animation.
+   * Broadcast the animation to other player.
+   */
+  socket.on('change-animation', (animation) => {
+    socket.broadcast.emit('updates-animation', animation)
+  })
+
+  /**
    * Handle player disconnection.
    */
   socket.on("disconnect", () => {
